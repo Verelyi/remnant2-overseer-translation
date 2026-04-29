@@ -22,8 +22,15 @@ Based on [`lib.remnant2.analyzer`](https://github.com/AndrewSav/lib.remnant2.ana
 | `Location.cs` | `RemnantOverseer/Models/Location.cs` | Added `LocalizedName` and `DisplayName` properties |
 | `Zone.cs` | `RemnantOverseer/Models/Zone.cs` | Added `LocalizedName` and `DisplayName` properties |
 | `DatasetMapper.cs` | `RemnantOverseer/Utilities/DatasetMapper.cs` | Added `LocationTranslations.Get()` calls for zone and location mapping |
-| `WorldView.axaml` | `RemnantOverseer/Views/WorldView.axaml` | Replaced `{Binding Name}` with `{Binding DisplayName}` in zone and location templates |
+| `WorldView.axaml` | `RemnantOverseer/Views/WorldView.axaml` | Replaced `{Binding Name}` with `{Binding DisplayName}` in zone and location templates; info icon made clickable (see Part 3) |
 | `CHANGES.md` | — | Describes the exact source code changes (for reference) |
+
+### Part 3 — Clickable info icon with Google Translate
+
+| File | Original path in project | Purpose |
+|------|--------------------------|---------|
+| `WorldView.axaml` | `RemnantOverseer/Views/WorldView.axaml` | `PathIcon` for item notes replaced with a clickable `Button` |
+| `WorldView.axaml.cs` | `RemnantOverseer/Views/WorldView.axaml.cs` | Added `NoteTranslateButton_Click` handler |
 
 ---
 
@@ -79,6 +86,54 @@ Example of a correctly translated entry:
 Location/zone names are read from the save file at runtime and are not present in `db.json`, so they require a separate approach: a static translation dictionary resolved at the source code level.
 
 Copy the modified files from this repo into their respective paths in the project, then rebuild. See `CHANGES.md` for the exact line-by-line diff if you prefer to apply changes manually.
+
+---
+
+## Part 3 — Clickable info icon (Google Translate)
+
+The `(i)` icon next to each item name shows a tooltip with the `Note` field — a handwritten hint by the original author about how to obtain the item. By default the icon is not interactive.
+
+This modification replaces the `PathIcon` with a `Button` that opens Google Translate (EN→RU) in the default browser with the note text pre-filled.
+
+**`WorldView.axaml`** — find (~line 322):
+```xml
+<PathIcon Data="{StaticResource RoundInfoIcon}" IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" ToolTip.Tip="{Binding Description}" ToolTip.Placement="LeftEdgeAlignedTop"/>
+```
+Replace with:
+```xml
+<Button Classes="plain hint"
+        IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+        ToolTip.Placement="LeftEdgeAlignedTop"
+        Click="NoteTranslateButton_Click"
+        Padding="0" Margin="5 0">
+  <PathIcon Data="{StaticResource RoundInfoIcon}"/>
+  <ToolTip.Tip>
+    <StackPanel Orientation="Vertical" MaxWidth="350">
+      <TextBlock Text="{Binding Description}" TextWrapping="Wrap"/>
+      <TextBlock FontSize="11" Opacity="0.6" Margin="0 6 0 0" TextDecorations="{x:Null}">🌐 Click to translate in Google</TextBlock>
+    </StackPanel>
+  </ToolTip.Tip>
+</Button>
+```
+
+**`WorldView.axaml.cs`** — add the handler to the `WorldView` class:
+```csharp
+private void NoteTranslateButton_Click(object? sender, RoutedEventArgs e)
+{
+    if (sender is Button btn && btn.DataContext is Item item && !string.IsNullOrEmpty(item.Description))
+    {
+        var text = Uri.EscapeDataString(item.Description);
+        var url = $"https://translate.google.com/?sl=en&tl=ru&text={text}&op=translate";
+        Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+    }
+}
+```
+
+Required `using` directives (already present in the file from this repo):
+```csharp
+using RemnantOverseer.Models;
+using System.Diagnostics;
+```
 
 ---
 
