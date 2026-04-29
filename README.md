@@ -29,37 +29,37 @@ Based on `lib.remnant2.analyzer` version **0.0.43** and RemnantOverseer as of **
 
 ## Part 1 — Item names (db.json patch)
 
-The item database is embedded as a resource inside `lib.remnant2.analyzer.dll`. To apply the translation:
+`lib.remnant2.analyzer.db.json` is embedded as a managed resource inside `lib.remnant2.analyzer.dll`. The patching workflow:
 
-1. Open `RemnantOverseer.exe` with 7-zip and extract `49.lib.remnant2.analyzer.dll` → rename to `lib.remnant2.analyzer.dll`
-2. Open it in [dnSpy](https://github.com/dnSpy/dnSpy)
-3. Expand `lib.remnant2.analyzer` → `Resources` → `lib.remnant2.analyzer.db.json`
-4. Right-click → **Import from File** → select `lib.remnant2.analyzer.db.json` from this repo
-5. **File → Save Module** → save as patched DLL
-6. Copy the patched DLL into NuGet cache:
+1. **Extract the DLL** from `RemnantOverseer.exe` (it's a single-file publish bundle — use 7-zip), locate `49.lib.remnant2.analyzer.dll`, rename to `lib.remnant2.analyzer.dll`.
+2. **Patch the resource** in [dnSpy](https://github.com/dnSpy/dnSpy): `lib.remnant2.analyzer` → `Resources` → right-click `lib.remnant2.analyzer.db.json` → **Import from File** → **File → Save Module**.
+3. **Drop the patched DLL** into the NuGet cache so `dotnet publish` picks it up instead of the feed version:
    ```
-   %USERPROFILE%\.nuget\packages\lib.remnant2.analyzer\0.0.43\lib\net8.0\
+   %USERPROFILE%\.nuget\packages\lib.remnant2.analyzer\0.0.43\lib\net8.0\lib.remnant2.analyzer.dll
    ```
-7. Rebuild RemnantOverseer: `dotnet publish -c Release -r win-x64 --self-contained true`
+4. **Rebuild:**
+   ```
+   dotnet publish -c Release -r win-x64 --self-contained true
+   ```
 
-### ⚠️ Critical rule: only translate the `Name` field
+> **Note:** the version path (`0.0.43`) must match the `PackageReference` in `RemnantOverseer.csproj`. Verify before copying.
 
-`lib.remnant2.analyzer` uses several other fields for **internal matching** against the save file. Translating them causes a crash (`"Sequence contains no matching element"`).
+### ⚠️ Critical: only `Name` is safe to translate
 
-| Field | Must stay in English |
-|-------|---------------------|
-| `DropReference` | Used to look up LootGroup by exact match |
-| `EventLocation` | Used to look up Location by exact match |
-| `SpawnReference` | Used to look up SpawnEntry by exact match |
-| `ProfileId` | In-game asset path |
-| `World` | World identifier (`World_DLC1`, `World_Fae`, etc.) |
-| `Type` | Item type (`ring`, `amulet`, `weapon`, etc.) |
-| `DropType` | Drop type (`Event`, `Location`, `Crafting`, etc.) |
-| `Id` | Unique item identifier |
+Several fields are used by `lib.remnant2.analyzer` for exact-match lookups against the save file. Translating them breaks matching and throws `"Sequence contains no matching element"` at runtime.
 
-**Only `Name` is safe to translate.**
+| Field | Used for |
+|-------|----------|
+| `DropReference` | LootGroup lookup |
+| `EventLocation` | Location lookup |
+| `SpawnReference` | SpawnEntry lookup |
+| `ProfileId` | UE asset path |
+| `World` | World identifier |
+| `Type` | Item type classifier |
+| `DropType` | Drop type classifier |
+| `Id` | Unique item key |
 
-Example:
+Example of a correctly translated entry:
 ```json
 {
   "Id": "Ring_CrimsonDreamstone",
@@ -76,7 +76,7 @@ Example:
 
 ## Part 2 — Location and zone names (source code)
 
-Location/zone names come from the save file at runtime, not from `db.json`, so they need a separate approach: a static translation dictionary applied at the source code level.
+Location/zone names are read from the save file at runtime and are not present in `db.json`, so they require a separate approach: a static translation dictionary resolved at the source code level.
 
 Copy the modified files from this repo into their respective paths in the project, then rebuild. See `CHANGES.md` for the exact line-by-line diff if you prefer to apply changes manually.
 
