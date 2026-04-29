@@ -2,7 +2,7 @@
 
 Translation of item names and location names for [RemnantOverseer](https://github.com/Angelore/remnant-two-overseer) into Russian, using the official game localization file as the source.
 
-Based on `lib.remnant2.analyzer` version **0.0.43** and RemnantOverseer as of **November 2024** (last game update).
+Based on [`lib.remnant2.analyzer`](https://github.com/AndrewSav/lib.remnant2.analyzer) version **0.0.43** and RemnantOverseer as of **November 2024** (last game update).
 
 ---
 
@@ -46,7 +46,7 @@ Based on `lib.remnant2.analyzer` version **0.0.43** and RemnantOverseer as of **
 
 ### ⚠️ Critical: only `Name` is safe to translate
 
-Several fields are used by `lib.remnant2.analyzer` for exact-match lookups against the save file. Translating them breaks matching and throws `"Sequence contains no matching element"` at runtime.
+Several fields are used by [`lib.remnant2.analyzer`](https://github.com/AndrewSav/lib.remnant2.analyzer) for exact-match lookups against the save file. Translating them breaks matching and throws `"Sequence contains no matching element"` at runtime.
 
 | Field | Used for |
 |-------|----------|
@@ -90,3 +90,5 @@ Item and location names are translated using the official Russian localization f
 Remnant2\Remnant2\Content\Paks\pakchunk0-Windows.pak
   └── Remnant2/Content/Localization/Remnant2/ru/Remnant2.locres
 ```
+
+Location names have some manual corrections for accuracy where the official translation was unclear.
