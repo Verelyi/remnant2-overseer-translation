@@ -1,6 +1,6 @@
-# Remnant 2 Overseer — Translation
+# Remnant 2 Overseer — Translation (RU)
 
-Translation of item names and location names for [RemnantOverseer](https://github.com/Angelore/remnant-two-overseer) into Russian, using the official `Remnant2.json` game localization file as the source.
+Translation of item names and location names for [RemnantOverseer](https://github.com/Angelore/remnant-two-overseer) into Russian, using the official game localization file as the source.
 
 Based on `lib.remnant2.analyzer` version **0.0.43** and RemnantOverseer as of **November 2024** (last game update).
 
@@ -8,11 +8,22 @@ Based on `lib.remnant2.analyzer` version **0.0.43** and RemnantOverseer as of **
 
 ## What's included
 
+### Part 1 — Item name patch
+
 | File | Purpose |
 |------|---------|
 | `lib.remnant2.analyzer.db.json` | Patched database — item `Name` fields contain `"English / Russian"` |
-| `LocationTranslations.cs` | Static EN→RU dictionary for zone and location names |
-| `CHANGES.md` | Source code changes needed in RemnantOverseer to display translated location names |
+
+### Part 2 — Location/zone name translation (source code)
+
+| File | Original path in project | Purpose |
+|------|--------------------------|---------|
+| `LocationTranslations.cs` | `RemnantOverseer/Utilities/LocationTranslations.cs` | Static EN→RU dictionary for zone and location names (new file) |
+| `Location.cs` | `RemnantOverseer/Models/Location.cs` | Added `LocalizedName` and `DisplayName` properties |
+| `Zone.cs` | `RemnantOverseer/Models/Zone.cs` | Added `LocalizedName` and `DisplayName` properties |
+| `DatasetMapper.cs` | `RemnantOverseer/Utilities/DatasetMapper.cs` | Added `LocationTranslations.Get()` calls for zone and location mapping |
+| `WorldView.axaml` | `RemnantOverseer/Views/WorldView.axaml` | Replaced `{Binding Name}` with `{Binding DisplayName}` in zone and location templates |
+| `CHANGES.md` | — | Describes the exact source code changes (for reference) |
 
 ---
 
@@ -67,10 +78,17 @@ Example:
 
 Location/zone names come from the save file at runtime, not from `db.json`, so they need a separate approach: a static translation dictionary applied at the source code level.
 
-See `LocationTranslations.cs` and `CHANGES.md` for the full implementation.
+Copy the modified files from this repo into their respective paths in the project, then rebuild. See `CHANGES.md` for the exact line-by-line diff if you prefer to apply changes manually.
 
 ---
 
 ## Translation source
 
-Item names are translated using the official **`ru.Remnant2.json`** localization file included with the Russian version of the game. Location names are translated from the same source with some manual corrections for accuracy.
+Item and location names are translated using the official Russian localization file extracted from the game via [FModel](https://fmodel.app/):
+
+```
+Remnant2\Remnant2\Content\Paks\pakchunk0-Windows.pak
+  └── Remnant2/Content/Localization/Remnant2/ru/Remnant2.locres
+```
+
+Location names have some manual corrections for accuracy where the official translation was unclear.
