@@ -90,5 +90,3 @@ Item and location names are translated using the official Russian localization f
 Remnant2\Remnant2\Content\Paks\pakchunk0-Windows.pak
   └── Remnant2/Content/Localization/Remnant2/ru/Remnant2.locres
 ```
-
-Location names have some manual corrections for accuracy where the official translation was unclear.
