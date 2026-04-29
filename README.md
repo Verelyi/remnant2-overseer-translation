@@ -1,6 +1,6 @@
 # Remnant 2 Overseer — Translation
 
-Translation of item names and location names for [RemnantOverseer](https://github.com/Angelore/remnant-two-overseer) into Russian, using the official `ru.Remnant2.json` game localization file as the source.
+Translation of item names and location names for [RemnantOverseer](https://github.com/Angelore/remnant-two-overseer) into Russian, using the official `Remnant2.json` game localization file as the source.
 
 Based on `lib.remnant2.analyzer` version **0.0.43** and RemnantOverseer as of **November 2024** (last game update).
 
