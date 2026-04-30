@@ -13,6 +13,8 @@ Based on [`lib.remnant2.analyzer`](https://github.com/AndrewSav/lib.remnant2.ana
 | File | Purpose |
 |------|---------|
 | `lib.remnant2.analyzer.db.json` | Patched database — each item `Name` field contains `"English / Russian"` |
+| `en.Remnant2.json` | Official EN localization extracted from `Remnant2.locres` via FModel |
+| `ru.Remnant2.json` | Official RU localization extracted from `Remnant2.locres` via FModel |
 
 ### Part 2 — Location/zone name translation
 
@@ -117,9 +119,17 @@ using System.Diagnostics;
 
 ## Translation source
 
-Item and location names translated using the official Russian localization file extracted from the game via [FModel](https://fmodel.app/):
+Item names were matched using the official game localization files extracted from `pakchunk0-Windows.pak` via [FModel](https://fmodel.app/):
 
 ```
-Remnant2\Remnant2\Content\Paks\pakchunk0-Windows.pak
-  └── Remnant2/Content/Localization/Remnant2/ru/Remnant2.locres
+Remnant2/Content/Localization/Remnant2/{en,ru}/Remnant2.locres
 ```
+
+Both files were exported as JSON (`en.Remnant2.json`, `ru.Remnant2.json`) and are included in this repo. Each entry shares a UUID key across languages.
+
+Patching script workflow:
+1. For each item in `db.json`, look up `Name` in `en.Remnant2.json`
+2. Retrieve the matching RU string from `ru.Remnant2.json` by UUID key
+3. Write result back to `db.json` as `"English / Russian"`
+
+Items with no match in the locres files (custom/handwritten entries) retain the original English name unchanged.
