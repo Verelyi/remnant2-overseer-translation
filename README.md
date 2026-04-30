@@ -1,8 +1,12 @@
-# Remnant 2 Overseer — Translation (RU)
+# Remnant 2 Overseer — Translation
 
-Russian translation patch for [RemnantOverseer](https://github.com/Angelore/remnant-two-overseer) covering item names, location/zone names, and item acquisition notes.
+Translation (ru) patch for [RemnantOverseer](https://github.com/Angelore/remnant-two-overseer) covering item names, location/zone names, and item acquisition notes.
 
 Based on [`lib.remnant2.analyzer`](https://github.com/AndrewSav/lib.remnant2.analyzer) **0.0.43** and RemnantOverseer as of the **November 2024** game update.
+
+Many thanks to [@Angelore](https://github.com/Angelore) for building RemnantOverseer and to [@AndrewSav](https://github.com/AndrewSav) for the underlying library — this patch would not exist without their work.
+
+This is an amateur project created in the hope it may be of interest to the community. It makes no claims to quality or correctness and likely contains inaccuracies and rough edges. Apologies in advance for anything that does not hold up under scrutiny.
 
 ---
 
@@ -119,7 +123,7 @@ using System.Diagnostics;
 
 ## Translation source
 
-Item names were matched using the official game localization files extracted from `pakchunk0-Windows.pak` via [FModel](https://fmodel.app/):
+Item names were matched using the official game localization files extracted from `pakchunk0-Windows.pak` via [FModel](https://fmodel.app()):
 
 ```
 Remnant2/Content/Localization/Remnant2/{en,ru}/Remnant2.locres
